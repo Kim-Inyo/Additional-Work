@@ -12,12 +12,18 @@ vector<pair<string, int>> OpMap = {{"+", 1}, {"-", 1}, {"*", 2}, {"/", 2}, {"^",
 
 int getNthRoot(int result, int n) {
     int i = 1;
+    if (n == 0)
+        return -1;
     while (pow(i, n) <= result) {
         if (pow(i, n) == result) {
             return i;
         }
+        if (pow(-i, n) == result) {
+            return -i;
+        }
         i += 1;
     }
+    return -1;
 }
 
 int FindIndex(string c){
@@ -27,70 +33,97 @@ int FindIndex(string c){
     return -1;
 }
 
+int find(string s, char c){
+    for(int i=0; i< s.length(); i++)
+        if (s[i] == c)
+            return i;
+    return -1;
+}
+
+int isNumber(string s){
+    int DotNumber = 0;
+    for(int i=0; i<s.length(); i++){
+        if(s[i] == '.')
+            DotNumber++;
+        else if(!isdigit(s[i]))
+            return 0;
+        else continue;
+    }
+    if(DotNumber > 1)
+        return 0;
+    return 1;
+}
+
 vector<string> ConvertToInfix(string origin){
     vector<string> converted = {};
     string temp = "";
+    int BracketNumber = 0;
     for(int i=0; i < origin.length(); i++){
         string operand = string(1, origin[i]);
         if (origin[i] == ' ')
             continue;
-        switch (origin[i]){
-            case 's':
-                if (origin[i+1] == 'i'){
-                    operand = origin.substr(i, 3);
-                    i += 2;
-                }
-                if (origin[i+1] == 'q'){
-                    operand = origin.substr(i, 4);
-                    i += 3;
-                }
-                break;
-            case 'c':
-                operand = origin.substr(i, 3);
-                i += 2;
-                break;
-            case 't':
-                operand = origin.substr(i, 2);
-                i += 1;
-                break;
-            default:
-                break;
-        }
-        if (FindIndex(operand) >= 0){
-            int index = FindIndex(operand);
-            if (string::npos != temp.find_first_of("0123456789"))
-                converted.push_back(temp);
-            if (origin[i] == '-') {
-                if (i == 0)
-                    temp = "-";
-                else if (origin[i - 1] == '(') {
-                    int j = i + 1;
-                    for (; origin[j] != ')'; j++) {
-                        if (!isdigit(origin[j]) && origin[j] != '.') {
-                            temp = "-";
-                            break;
-                        }
+        if (FindIndex(operand) < 0) {
+            i++;
+            while(FindIndex(string(1, origin[i])) < 0 && i < origin.length())
+                operand += origin[i++];
+            //cout << operand << endl;
+            if (FindIndex(operand) >= 0)
+                converted.push_back(operand);
+            else{
+                if (isNumber(operand) == 1) {
+                    if(origin[i] == '(') {
+                        cout << "Operator is missing between operand and bracket!" << endl;
+                        return {"Expression is wrong"};
                     }
-                    if (origin[j] == ')') {
-                        converted.pop_back();
-                        temp = "-";
-                        origin[j] = ' ';
-                    }
+                    temp += operand;
                 }
                 else{
-                    temp = "";
-                    converted.push_back(operand);
+                    cout << "Wrong word is included!" << endl;
+                    return {"Expression is wrong"};
                 }
             }
-            else{
-                temp = "";
-                converted.push_back(operand);
-            }
+            i--;
         }
-        else temp += origin[i];
+        else{
+            int index = FindIndex(operand);
+            if (string::npos != temp.find_first_of("0123456789")) {
+                converted.push_back(temp);
+                temp = "";
+            }
+            if (origin[i] == '-' && (i == 0 || origin[i - 1] == '(')) {
+                converted.push_back("0");
+            }
+            else {
+                if ((i == 0 && origin[i] != '(') || (i == origin.length()-1 && origin[i] != ')')){
+                    cout << "Grammar violated!" << endl;
+                    return {"Expression is wrong"};
+                }
+                if (i > 0 && i < origin.length()-1) {
+                    if ((origin[i] == '(' && (isdigit(origin[i-1]) || (FindIndex(string(1, origin[i+1])) >= 0 && origin[i+1] != '-')))
+                    || (origin[i] == ')' && (isdigit(origin[i+1]) || (FindIndex(string(1, origin[i-1])) >= 0 && origin[i-1] != '-')))){
+                        cout << "Grammar violated!" << endl;
+                        return {"Expression is wrong"};
+                    }
+                }
+                if (origin[i] == '(')
+                    BracketNumber ++;
+                if (origin[i] == ')'){
+                    BracketNumber --;
+                    if (BracketNumber < 0){
+                        cout << "Brackets are placed incorrectly!" << endl;
+                        return {"Expression is wrong"};
+                    }
+                }
+            }
+            converted.push_back(operand);
+        }
     }
     if (temp != "")
         converted.push_back(temp);
+    if (BracketNumber != 0){
+        cout << "Brackets are placed incorrectly!" << endl;
+        return {"Expression is wrong"};
+    }
     return converted;
 }
 
@@ -110,22 +143,32 @@ vector<string> InfixToPostfix(vector<string> &infix){
                 OpStorage.pop_back();
             }
             OpStorage.pop_back();
+            if (OpStorage.size() > 0 && OpStorage.back() == "sqrt"){
+                postfix.push_back(OpStorage.back());
+                OpStorage.pop_back();
+            }
         }
         else {
             if (infix[i] != ",") {
-                while (OpStorage.size() > 0 &&
-                       OpMap[FindIndex(infix[i])].second <= OpMap[FindIndex(OpStorage.back())].second) {
+                while (OpStorage.size() > 0 && OpMap[FindIndex(infix[i])].second <= OpMap[FindIndex(OpStorage.back())].second) {
                     postfix.push_back(OpStorage.back());
                     OpStorage.pop_back();
                 }
                 OpStorage.push_back(infix[i]);
             }
         }
+        /*for(int i=0; i<postfix.size(); i++)
+            cout << postfix[i];
+        cout << endl;
+        for(int i=0; i<OpStorage.size(); i++)
+            cout << OpStorage[i];
+        cout << endl;
+        cout << infix[i] << endl;*/
     }
     return postfix;
 }
 
-float calculate(vector<string> & postfix)
+float calculate(vector<string> & postfix, int &solved)
 {
     vector<float> CalculationStack = {};
     for(int i=0; i<postfix.size(); i++) {
@@ -151,6 +194,11 @@ float calculate(vector<string> & postfix)
                     n1 = CalculationStack.back();
                     n2 = CalculationStack[CalculationStack.size() - 2];
                     n2 = getNthRoot(n2, n1);
+                    if (n2 == -1){
+                        cout << "Unable to calculate!" << endl;
+                        solved = 0;
+                        return 0;
+                    }
                     CalculationStack.pop_back();
                     CalculationStack.pop_back();
                     CalculationStack.push_back(n2);
@@ -194,13 +242,24 @@ int main(){
     string expression;
     getline(cin, expression);
     expression.erase(remove(expression.begin(), expression.end(), ' '), expression.end());
-    cout << expression << endl;
     vector<string> ConvertedExpression = ConvertToInfix(expression);
-    ConvertedExpression = InfixToPostfix(ConvertedExpression);
     /*for(int i = 0; i< ConvertedExpression.size(); i++)
-        cout << ConvertedExpression[i] << endl;*/
-    float result = calculate(ConvertedExpression);
-    cout << result << endl;
+        cout << ConvertedExpression[i] << endl;
+    cout << endl;*/
+    if (ConvertedExpression[0] != "Expression is wrong") {
+        int solved = 1;
+        ConvertedExpression = InfixToPostfix(ConvertedExpression);
+        /*for (int i = 0; i < ConvertedExpression.size(); i++)
+            cout << ConvertedExpression[i] << endl;
+        cout << endl;*/
+        float result = calculate(ConvertedExpression, solved);
+        if (solved == 1)
+            cout << result << endl;
+    }
 }
 
-// -2 + 10 * (20.1 - 0.1) ^ 2 + sin(0)/1
+/* -2 + 10 * (20.1 - 0.1) ^ 2 + sin(0)/1
+ -(-1)
+-(0+1)
+-sin(1)
+ */
