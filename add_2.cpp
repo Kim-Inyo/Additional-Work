@@ -67,12 +67,17 @@ vector<string> ConvertToInfix(string origin){
             while(FindIndex(string(1, origin[i])) < 0 && i < origin.length())
                 operand += origin[i++];
             //cout << operand << endl;
-            if (FindIndex(operand) >= 0)
+            if (FindIndex(operand) >= 0) {
+                if(origin[i] != '('){
+                    cout << "Wrong expression!" << endl;
+                    return {"Expression is wrong"};
+                }
                 converted.push_back(operand);
+            }
             else{
                 if (isNumber(operand) == 1) {
                     if(origin[i] == '(') {
-                        cout << "Operator is missing between operand and bracket!" << endl;
+                        cout << "Operator is missing between operand and bracket! 1" << endl;
                         return {"Expression is wrong"};
                     }
                     temp += operand;
@@ -95,13 +100,34 @@ vector<string> ConvertToInfix(string origin){
             }
             else {
                 if ((i == 0 && origin[i] != '(') || (i == origin.length()-1 && origin[i] != ')')){
-                    cout << "Grammar violated!" << endl;
+                    cout << "Grammar violated! 2" << endl;
                     return {"Expression is wrong"};
                 }
                 if (i > 0 && i < origin.length()-1) {
-                    if ((origin[i] == '(' && (isdigit(origin[i-1]) || (FindIndex(string(1, origin[i+1])) >= 0 && origin[i+1] != '-')))
-                    || (origin[i] == ')' && (isdigit(origin[i+1]) || (FindIndex(string(1, origin[i-1])) >= 0 && origin[i-1] != '-')))){
-                        cout << "Grammar violated!" << endl;
+                    /*if (((origin[i] == '(' && (isdigit(origin[i-1])) || (FindIndex(string(1, origin[i+1])) >= 0 && origin[i+1] != '-')))
+                    || ((origin[i] == ')' && (isdigit(origin[i+1])) || (FindIndex(string(1, origin[i-1])) >= 0 && origin[i-1] != '-')))){
+                        cout << origin[i] << " " << origin[i+1] << " " << " Grammar violated! 3" << endl;
+                        return {"Expression is wrong"};
+                    }*/
+                    if (origin[i] == '(' && isdigit(origin[i-1])){
+                        cout << "Grammar violated! 3" << endl;
+                        return {"Expression is wrong"};
+                    }
+                    if (origin[i] == '(' && FindIndex(string(1, origin[i+1])) >= 0 && origin[i+1] != '(' && origin[i+1] != '-'){
+                        cout << "Grammar violated! 4" << endl;
+                        return {"Expression is wrong"};
+                    }
+                    if (origin[i] == ')' && isdigit(origin[i+1])){
+                        cout << "Grammar violated! 5" << endl;
+                        return {"Expression is wrong"};
+                    }
+                    if (origin[i] == ')' && FindIndex(string(1, origin[i-1])) >= 0 && origin[i-1] != ')'){
+                        cout << "Grammar violated! 6" << endl;
+                        return {"Expression is wrong"};
+                    }
+                    if (FindIndex(string(1, origin[i])) >= 0 && FindIndex(string(1, origin[i])) <= 4
+                    && FindIndex(string(1, origin[i-1])) >= 0 && FindIndex(string(1, origin[i-1])) <= 4) {
+                        cout << origin[i] << " " << origin[i-1] << " " << " Grammar violated! 7" << endl;
                         return {"Expression is wrong"};
                     }
                 }
@@ -110,7 +136,7 @@ vector<string> ConvertToInfix(string origin){
                 if (origin[i] == ')'){
                     BracketNumber --;
                     if (BracketNumber < 0){
-                        cout << "Brackets are placed incorrectly!" << endl;
+                        cout << "Brackets are placed incorrectly! 4" << endl;
                         return {"Expression is wrong"};
                     }
                 }
@@ -121,7 +147,7 @@ vector<string> ConvertToInfix(string origin){
     if (temp != "")
         converted.push_back(temp);
     if (BracketNumber != 0){
-        cout << "Brackets are placed incorrectly!" << endl;
+        cout << "Brackets are placed incorrectly! 5" << endl;
         return {"Expression is wrong"};
     }
     return converted;
