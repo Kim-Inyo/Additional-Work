@@ -219,12 +219,11 @@ float calculate(vector<string> & postfix, int &solved)
                 if (postfix[i] == "sqrt") {
                     n1 = CalculationStack.back();
                     n2 = CalculationStack[CalculationStack.size() - 2];
-                    n2 = getNthRoot(n2, n1);
-                    if (n2 == -1){
+                    if (n1 == 0){
                         cout << "Unable to calculate!" << endl;
-                        solved = 0;
                         return 0;
                     }
+                    n2 = pow(n2, 1/n1);
                     CalculationStack.pop_back();
                     CalculationStack.pop_back();
                     CalculationStack.push_back(n2);
