@@ -1,0 +1,54 @@
+﻿  arcanoid.cpp
+D:\FOR STUDY\Computer Technic\Algorithm and structure\2nd semester\Arcanoid\Arcanoid\arcanoid.cpp(29,15): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+D:\FOR STUDY\Computer Technic\Algorithm and structure\2nd semester\Arcanoid\Arcanoid\arcanoid.cpp(40,22): warning C4244: 'initializing': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+D:\FOR STUDY\Computer Technic\Algorithm and structure\2nd semester\Arcanoid\Arcanoid\arcanoid.cpp(41,23): warning C4244: 'initializing': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+D:\FOR STUDY\Computer Technic\Algorithm and structure\2nd semester\Arcanoid\Arcanoid\arcanoid.cpp(44,21): warning C4244: 'initializing': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+D:\FOR STUDY\Computer Technic\Algorithm and structure\2nd semester\Arcanoid\Arcanoid\arcanoid.cpp(45,22): warning C4244: 'initializing': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+D:\FOR STUDY\Computer Technic\Algorithm and structure\2nd semester\Arcanoid\Arcanoid\arcanoid.cpp(48,21): warning C4244: 'initializing': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+D:\FOR STUDY\Computer Technic\Algorithm and structure\2nd semester\Arcanoid\Arcanoid\arcanoid.cpp(49,22): warning C4244: 'initializing': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+D:\FOR STUDY\Computer Technic\Algorithm and structure\2nd semester\Arcanoid\Arcanoid\arcanoid.cpp(67,38): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+D:\FOR STUDY\Computer Technic\Algorithm and structure\2nd semester\Arcanoid\Arcanoid\arcanoid.cpp(72,28): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\FOR STUDY\Computer Technic\Algorithm and structure\2nd semester\Arcanoid\Arcanoid\arcanoid.cpp(74,9): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\FOR STUDY\Computer Technic\Algorithm and structure\2nd semester\Arcanoid\Arcanoid\arcanoid.cpp(84,46): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+D:\FOR STUDY\Computer Technic\Algorithm and structure\2nd semester\Arcanoid\Arcanoid\arcanoid.cpp(88,20): warning C4244: 'initializing': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+D:\FOR STUDY\Computer Technic\Algorithm and structure\2nd semester\Arcanoid\Arcanoid\arcanoid.cpp(89,21): warning C4244: 'initializing': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+D:\FOR STUDY\Computer Technic\Algorithm and structure\2nd semester\Arcanoid\Arcanoid\arcanoid.cpp(157,26): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+D:\FOR STUDY\Computer Technic\Algorithm and structure\2nd semester\Arcanoid\Arcanoid\arcanoid.cpp(169,26): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\FOR STUDY\Computer Technic\Algorithm and structure\2nd semester\Arcanoid\Arcanoid\arcanoid.cpp(171,42): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\FOR STUDY\Computer Technic\Algorithm and structure\2nd semester\Arcanoid\Arcanoid\arcanoid.cpp(184,22): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+D:\FOR STUDY\Computer Technic\Algorithm and structure\2nd semester\Arcanoid\Arcanoid\arcanoid.cpp(185,25): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\FOR STUDY\Computer Technic\Algorithm and structure\2nd semester\Arcanoid\Arcanoid\arcanoid.cpp(189,22): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+D:\FOR STUDY\Computer Technic\Algorithm and structure\2nd semester\Arcanoid\Arcanoid\arcanoid.cpp(190,22): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  Arcanoid.vcxproj -> D:\FOR STUDY\Computer Technic\Algorithm and structure\2nd semester\Arcanoid\x64\Debug\Arcanoid.exe
