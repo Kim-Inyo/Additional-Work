@@ -72,6 +72,29 @@ void updateRecord(std::fstream &records, int blockCount, int remains) {
     records.close();
 }
 
+int loadMap(std::fstream& map, int level, std::vector<std::string>& Map) {
+    std::string mapDir = "map/map" + std::to_string(level + 1) + ".txt";
+    map.open(mapDir, std::ios::in);
+    int width = 0;
+    if (map.is_open()) {
+        std::string line;
+        while (std::getline(map, line)) {
+            Map.push_back(line);
+            if (line.length() > width)
+                width = line.length();
+        }
+        map.close();
+    }
+
+    int height = Map.size();
+    for (int i = 0; i < height; i++) {
+        for (int j = Map[i].length(); j < width; j++)
+            Map[i] += ' ';
+    }
+
+    return width;
+}
+
 int main() {
     srand(time(0));
 
@@ -191,27 +214,10 @@ int main() {
             sBoard.setTexture(board);
             sBall.setTexture(ball);
 
-            std::fstream newfile;
-            newfile.open("map.txt", std::ios::in);
-
+            std::fstream map;
             std::vector<std::string> Map;
-            int width = 0;
-            if (newfile.is_open()) {
-                std::string line;
-                while (std::getline(newfile, line)) {
-                    std::cout << line << std::endl;
-                    Map.push_back(line);
-                    if (line.length() > width)
-                        width = line.length();
-                }
-                newfile.close();
-            }
-
+            int width = loadMap(map, 0, Map);
             int height = Map.size();
-            for (int i = 0; i < height; i++) {
-                for (int j = Map[i].length(); j < width; j++)
-                    Map[i] += ' ';
-            }
 
             RenderWindow app(VideoMode(tileWidth * width, 700), "Arkanoid");
             app.setFramerateLimit(60);
@@ -221,14 +227,14 @@ int main() {
             float appHeight = appSize.y;
 
             int remains = 0;
-            Sprite* blocks = new Sprite[height * width];
-            for (int i = 0; i < height; i++) {
+            Sprite* blocks = new Sprite[20 * width];
+            /*for (int i = 0; i < height; i++) {
                 for (int j = 0; j < width; j++) {
                     if (Map[i][j] == '*')
                         remains++;
                     blocks[i * width + j].setTexture(tile[i % 4]);
                 }
-            }
+            }*/
 
             float vx = 7, vy = 7;
             int speed = 10;
@@ -236,7 +242,8 @@ int main() {
             int result = 0;
             int hearts = 3;
             int levelChanger = 0;
-            int blockCount = remains;
+            int blockCount = 0;
+            int prevLevel = -1;
 
             Text message;
             message.setFont(font);
@@ -247,24 +254,26 @@ int main() {
             again.setCharacterSize(30);
             again.setFillColor(Color(0, 0, 0));
             again.setString("Try again");
-            again.setPosition((appWidth - again.getLocalBounds().width) / 2, 400);
+            again.setPosition((appWidth - again.getLocalBounds().width) / 2, 350);
 
             Text toMenu;
             toMenu.setFont(font);
             toMenu.setCharacterSize(30);
             toMenu.setFillColor(Color(0, 0, 0));
             toMenu.setString("Main Menu");
-            toMenu.setPosition((appWidth - toMenu.getLocalBounds().width) / 2, 470);
+            toMenu.setPosition((appWidth - toMenu.getLocalBounds().width) / 2, 420);
 
             Sprite sBorder3(border), sBorder4(border);
-            sBorder3.setPosition((appWidth - sBorder3.getLocalBounds().width) / 2, 395);
-            sBorder4.setPosition((appWidth - sBorder4.getLocalBounds().width) / 2, 465);
+            sBorder3.setPosition((appWidth - sBorder3.getLocalBounds().width) / 2, 345);
+            sBorder4.setPosition((appWidth - sBorder4.getLocalBounds().width) / 2, 415);
 
             while (app.isOpen()) {
                 sf::Event e;
                 while (app.pollEvent(e)) {
-                    if (e.type == sf::Event::Closed)
+                    if (e.type == sf::Event::Closed) {
+                        isStarted = false;
                         app.close();
+                    }
                 }
 
                 if (play) {
@@ -274,11 +283,6 @@ int main() {
                             if (isCollide(sBall, blocks[i * width + j])) {
                                 changeDirection(sBall, blocks[i * width + j], ballSize, vx, vy);
                                 blocks[i * width + j].setPosition(-100, 0);
-                                levelChanger++;
-                                if (levelChanger == 5) {
-                                    speed = ((speed + 2) % 21) > 10 ? ((speed + 2) % 20) : 10;
-                                    levelChanger = 0;
-                                }
                                 remains--;
                             }
                         }
@@ -286,13 +290,7 @@ int main() {
 
                     if (remains == 0) {
                         play = false;
-                        result = 1;
-                        message.setFillColor(Color(255, 0, 0));
-                        message.setString("Congratulations!");
-                        message.setPosition((appWidth - message.getLocalBounds().width) / 2, 300);
-
-                        std::fstream records;
-                        updateRecord(records, blockCount, remains);
+                        levelChanger++;
                     }
 
                     Vector2f curPos = sBall.getPosition();
@@ -312,10 +310,11 @@ int main() {
                         hearts--;
                         if (hearts == 0) {
                             play = false;
+                            levelChanger = 1;
                             result = -1;
                             message.setFillColor(Color(0, 0, 255));
                             message.setString("You Lose!");
-                            message.setPosition((appWidth - message.getLocalBounds().width) / 2, 300);
+                            message.setPosition((appWidth - message.getLocalBounds().width) / 2, 250);
 
                             std::fstream records;
                             updateRecord(records, blockCount, remains);
@@ -325,7 +324,6 @@ int main() {
                             sBall.setPosition((appWidth - ballWidth) / 2, 700 - boardHeight - ballHeight);
                             vx = 0;
                             vy = 0;
-                            speed = 10;
                         }
                     }
 
@@ -363,7 +361,7 @@ int main() {
                         }
                         else {
                             if (Keyboard::isKeyPressed(Keyboard::Right) || Keyboard::isKeyPressed(Keyboard::Left))
-                                vy = speed - 0.3;
+                                vy = speed - 0.2;
                             vy *= -1;
                         }
                         vx = dx * (vx / abs(vx)) * pow(speed * speed - vy * vy, 0.5);
@@ -377,6 +375,8 @@ int main() {
                         if (sBorder3.getGlobalBounds().contains(translatedPos)) {
                             speed = 10;
                             hearts = 3;
+                            levelChanger = 0;
+                            blockCount = 0;
                             result = 0;
                         }
 
@@ -386,6 +386,21 @@ int main() {
                         }
                     }
                     if (result == 0) {
+                        while (!Map.empty()) Map.pop_back();
+                        width = loadMap(map, levelChanger % 5, Map);
+                        height = Map.size();
+                        remains = 0;
+                        hearts = 3;
+                        for (int i = 0; i < height; i++) {
+                            for (int j = 0; j < width; j++) {
+                                if (Map[i][j] == '*') {
+                                    if (levelChanger != prevLevel)
+                                        blockCount++;
+                                    remains++;
+                                }
+                                blocks[i * width + j].setTexture(tile[i % 4]);
+                            }
+                        }
                         sBoard.setPosition((appWidth - boardWidth) / 2, 700 - boardHeight);
                         sBall.setPosition((appWidth - ballWidth) / 2, 700 - boardHeight - ballHeight);
                         for (int i = 0; i < height; i++) {
@@ -398,6 +413,8 @@ int main() {
                         }
                         vx = 0;
                         vy = 0;
+                        speed = 10 + levelChanger * 2;
+                        prevLevel = levelChanger;
                         if (Keyboard::isKeyPressed(Keyboard::Right)) {
                             vy = -(rand() % 4 + speed / 2);
                             vx = pow(speed * speed - vy * vy, 0.5);
