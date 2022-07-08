@@ -17,7 +17,7 @@ void changeDirection(Sprite &s1, Sprite &s2, Vector2u size1, float& vx, float& v
     Vector2f pos2 = s2.getPosition();
 
     if (vy > 0) {
-        if (pos1.y > pos2.y - size1.y - vy) vx *= -1;
+        if (pos1.y > pos2.y - size1.y + vy) vx *= -1;
         else vy *= -1;
     }
     else {
