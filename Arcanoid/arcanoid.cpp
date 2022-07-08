@@ -237,7 +237,7 @@ int main() {
             }*/
 
             float vx = 7, vy = 7;
-            int speed = 10;
+            int speed = 20;
             bool play = false;
             int result = 0;
             int hearts = 3;
@@ -307,23 +307,28 @@ int main() {
                         sBall.setPosition(curPos.x, 0);
                     }
                     if (curPos.y > appHeight - ballHeight) {
-                        hearts--;
-                        if (hearts == 0) {
-                            play = false;
-                            levelChanger = 1;
-                            result = -1;
-                            message.setFillColor(Color(0, 0, 255));
-                            message.setString("You Lose!");
-                            message.setPosition((appWidth - message.getLocalBounds().width) / 2, 250);
-
-                            std::fstream records;
-                            updateRecord(records, blockCount, remains);
+                        if (curPos.x >= sBoard.getPosition().x - ballWidth && curPos.x <= sBoard.getPosition().x + boardWidth + ballWidth) {
+                            sBall.setPosition(curPos.x, sBoard.getPosition().y - ballHeight / 2);
                         }
                         else {
-                            sBoard.setPosition((appWidth - boardWidth) / 2, 700 - boardHeight);
-                            sBall.setPosition((appWidth - ballWidth) / 2, 700 - boardHeight - ballHeight);
-                            vx = 0;
-                            vy = 0;
+                            hearts--;
+                            if (hearts == 0) {
+                                play = false;
+                                levelChanger = 1;
+                                result = -1;
+                                message.setFillColor(Color(0, 0, 255));
+                                message.setString("You Lose!");
+                                message.setPosition((appWidth - message.getLocalBounds().width) / 2, 250);
+
+                                std::fstream records;
+                                updateRecord(records, blockCount, remains);
+                            }
+                            else {
+                                sBoard.setPosition((appWidth - boardWidth) / 2, 700 - boardHeight);
+                                sBall.setPosition((appWidth - ballWidth) / 2, 700 - boardHeight - ballHeight);
+                                vx = 0;
+                                vy = 0;
+                            }
                         }
                     }
 
@@ -373,7 +378,7 @@ int main() {
                         auto translatedPos = app.mapPixelToCoords(mousePos);
 
                         if (sBorder3.getGlobalBounds().contains(translatedPos)) {
-                            speed = 10;
+                            speed = 20;
                             hearts = 3;
                             levelChanger = 0;
                             blockCount = 0;
